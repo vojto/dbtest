@@ -5,6 +5,9 @@
   "plugins": {
     "SplashScreen": {
       "launchAutoHide": false
+    },
+    "CapacitorSQLite": {
+      "iosDatabaseLocation": "Library/Bazinga"
     }
   }
 }

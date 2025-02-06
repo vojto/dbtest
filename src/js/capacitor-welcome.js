@@ -1,5 +1,7 @@
 import { SplashScreen } from '@capacitor/splash-screen';
-import { Camera } from '@capacitor/camera';
+import { CapacitorSQLite, SQLiteConnection } from '@capacitor-community/sqlite';
+
+let globalDb = null;
 
 window.customElements.define(
   'capacitor-welcome',
@@ -60,30 +62,15 @@ window.customElements.define(
         <h1>Capacitor</h1>
       </capacitor-welcome-titlebar>
       <main>
+        <h2>SQLite Demo</h2>
         <p>
-          Capacitor makes it easy to build powerful apps for the app stores, mobile web (Progressive Web Apps), and desktop, all
-          with a single code base.
-        </p>
-        <h2>Getting Started</h2>
-        <p>
-          You'll probably need a UI framework to build a full-featured app. Might we recommend
-          <a target="_blank" href="http://ionicframework.com/">Ionic</a>?
+          This demo shows how to use SQLite with Capacitor. Click the button to test database operations!
         </p>
         <p>
-          Visit <a href="https://capacitorjs.com">capacitorjs.com</a> for information
-          on using native features, building plugins, and more.
+          <button class="button" id="take-photo">Test the database</button>
         </p>
-        <a href="https://capacitorjs.com" target="_blank" class="button">Read more</a>
-        <h2>Tiny Demo</h2>
-        <p>
-          This demo shows how to call Capacitor plugins. Say cheese!
-        </p>
-        <p>
-          <button class="button" id="take-photo">Take Photo</button>
-        </p>
-        <p>
-          <img id="image" style="max-width: 100%">
-        </p>
+        <p id="db-results"></p>
+        <p id="db-path"></p>
       </main>
     </div>
     `;
@@ -94,18 +81,61 @@ window.customElements.define(
 
       self.shadowRoot.querySelector('#take-photo').addEventListener('click', async function (e) {
         try {
-          const photo = await Camera.getPhoto({
-            resultType: 'uri',
-          });
-
-          const image = self.shadowRoot.querySelector('#image');
-          if (!image) {
-            return;
+          const resultsElement = self.shadowRoot.querySelector('#db-results');
+          const pathElement = self.shadowRoot.querySelector('#db-path');
+          
+          // Initialize database connection if not already initialized
+          if (!globalDb) {
+            const sqliteConnection = new SQLiteConnection(CapacitorSQLite);
+            globalDb = await sqliteConnection.createConnection('mydb', false, 'no-encryption', 1);
+            await globalDb.open();
+            
+            // Get database path
+            const dbList = await sqliteConnection.getDatabaseList();
+            pathElement.textContent = `Database path: ${JSON.stringify(dbList)}`;
           }
+          
+          // Count rows in notes table
+          const result = await globalDb.query(`
+            SELECT COUNT(*) as count FROM notes;
+          `);
+          
+          // Display count
+          resultsElement.textContent = `Number of notes: ${result.values[0].count}`;
 
-          image.src = photo.webPath;
-        } catch (e) {
-          console.warn('User cancelled', e);
+          // Paginate through all notes
+          let offset = 0;
+          const pageSize = 500;
+          let hasMore = true;
+          let pageNum = 1;
+
+          while (hasMore) {
+            let pageResult = await globalDb.query(`
+              SELECT * FROM notes 
+              LIMIT ${pageSize} 
+              OFFSET ${offset}
+            `);
+
+            const resultLength = pageResult.values.length;
+            
+            if (resultLength === 0) {
+              hasMore = false;
+            } else {
+              console.log(`Page ${pageNum}: Retrieved ${resultLength} notes`);
+              
+              // Clear the reference to allow garbage collection
+              pageResult = null;
+              
+              offset += pageSize;
+              pageNum++;
+              
+              // Sleep between pages
+              await sleep(2000);
+            }
+          }
+        } catch (error) {
+          console.error('Database Error:', error);
+          alert('Error: ' + error.message);
         }
       });
     }
@@ -140,3 +170,7 @@ window.customElements.define(
     }
   },
 );
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
