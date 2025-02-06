@@ -1,0 +1,10 @@
+{
+  "appId": "tech.median.dbtest",
+  "appName": "dbtest",
+  "webDir": "dist",
+  "plugins": {
+    "SplashScreen": {
+      "launchAutoHide": false
+    }
+  }
+}
