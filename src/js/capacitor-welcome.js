@@ -1,7 +1,5 @@
 import { SplashScreen } from '@capacitor/splash-screen';
-import { CapacitorSQLite, SQLiteConnection } from '@capacitor-community/sqlite';
-
-let globalDb = null;
+import { Echo } from './plugins';
 
 window.customElements.define(
   'capacitor-welcome',
@@ -66,11 +64,15 @@ window.customElements.define(
         <p>
           This demo shows how to use SQLite with Capacitor. Click the button to test database operations!
         </p>
+
         <p>
-          <button class="button" id="take-photo">Test the database</button>
+          <button class="button" id="test-echo">Test Echo Plugin</button>
         </p>
+
         <p id="db-results"></p>
         <p id="db-path"></p>
+        <p id="echo-result"></p>
+        <p id="memory-result"></p>
       </main>
     </div>
     `;
@@ -79,63 +81,20 @@ window.customElements.define(
     connectedCallback() {
       const self = this;
 
-      self.shadowRoot.querySelector('#take-photo').addEventListener('click', async function (e) {
+      self.shadowRoot.querySelector('#test-echo').addEventListener('click', async function (e) {
         try {
-          const resultsElement = self.shadowRoot.querySelector('#db-results');
-          const pathElement = self.shadowRoot.querySelector('#db-path');
+          const echoElement = self.shadowRoot.querySelector('#echo-result');
+          let messagesReceived = 0;
           
-          // Initialize database connection if not already initialized
-          if (!globalDb) {
-            const sqliteConnection = new SQLiteConnection(CapacitorSQLite);
-            globalDb = await sqliteConnection.createConnection('mydb', false, 'no-encryption', 1);
-            await globalDb.open();
-            
-            // Get database path
-            const dbList = await sqliteConnection.getDatabaseList();
-            pathElement.textContent = `Database path: ${JSON.stringify(dbList)}`;
-          }
-          
-          // Count rows in notes table
-          const result = await globalDb.query(`
-            SELECT COUNT(*) as count FROM notes;
-          `);
-          
-          // Display count
-          resultsElement.textContent = `Number of notes: ${result.values[0].count}`;
-
-          // Paginate through all notes
-          let offset = 0;
-          const pageSize = 500;
-          let hasMore = true;
-          let pageNum = 1;
-
-          while (hasMore) {
-            let pageResult = await globalDb.query(`
-              SELECT * FROM notes 
-              LIMIT ${pageSize} 
-              OFFSET ${offset}
-            `);
-
-            const resultLength = pageResult.values.length;
-            
-            if (resultLength === 0) {
-              hasMore = false;
-            } else {
-              console.log(`Page ${pageNum}: Retrieved ${resultLength} notes`);
-              
-              // Clear the reference to allow garbage collection
-              pageResult = null;
-              
-              offset += pageSize;
-              pageNum++;
-              
-              // Sleep between pages
-              await sleep(2000);
-            }
+          for (let i = 0; i < 30; i++) {
+            await Echo.echo();
+            messagesReceived++;
+            echoElement.textContent = `Messages received: ${messagesReceived}`;
+            await sleep(2000);
           }
         } catch (error) {
-          console.error('Database Error:', error);
-          alert('Error: ' + error.message);
+          console.error('Echo Error:', error);
+          alert('Echo Error: ' + error.message);
         }
       });
     }

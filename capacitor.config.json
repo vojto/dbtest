@@ -9,5 +9,8 @@
     "CapacitorSQLite": {
       "iosDatabaseLocation": "Library/Bazinga"
     }
+  },
+  "ios": {
+    "loggingBehavior": "none"
   }
 }

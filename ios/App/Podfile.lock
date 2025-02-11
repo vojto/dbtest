@@ -3,39 +3,21 @@ PODS:
     - CapacitorCordova
   - CapacitorCamera (7.0.0):
     - Capacitor
-  - CapacitorCommunitySqlite (7.0.0):
-    - Capacitor
-    - SQLCipher
-    - ZIPFoundation
   - CapacitorCordova (7.0.1)
   - CapacitorSplashScreen (7.0.0):
     - Capacitor
-  - SQLCipher (4.6.1):
-    - SQLCipher/standard (= 4.6.1)
-  - SQLCipher/common (4.6.1)
-  - SQLCipher/standard (4.6.1):
-    - SQLCipher/common
-  - ZIPFoundation (0.9.19)
 
 DEPENDENCIES:
   - "Capacitor (from `../../node_modules/.pnpm/@capacitor+ios@7.0.1_@capacitor+core@7.0.1/node_modules/@capacitor/ios`)"
   - "CapacitorCamera (from `../../node_modules/.pnpm/@capacitor+camera@7.0.0_@capacitor+core@7.0.1/node_modules/@capacitor/camera`)"
-  - "CapacitorCommunitySqlite (from `../../node_modules/.pnpm/@capacitor-community+sqlite@7.0.0_@capacitor+core@7.0.1/node_modules/@capacitor-community/sqlite`)"
   - "CapacitorCordova (from `../../node_modules/.pnpm/@capacitor+ios@7.0.1_@capacitor+core@7.0.1/node_modules/@capacitor/ios`)"
   - "CapacitorSplashScreen (from `../../node_modules/.pnpm/@capacitor+splash-screen@7.0.0_@capacitor+core@7.0.1/node_modules/@capacitor/splash-screen`)"
-
-SPEC REPOS:
-  trunk:
-    - SQLCipher
-    - ZIPFoundation
 
 EXTERNAL SOURCES:
   Capacitor:
     :path: "../../node_modules/.pnpm/@capacitor+ios@7.0.1_@capacitor+core@7.0.1/node_modules/@capacitor/ios"
   CapacitorCamera:
     :path: "../../node_modules/.pnpm/@capacitor+camera@7.0.0_@capacitor+core@7.0.1/node_modules/@capacitor/camera"
-  CapacitorCommunitySqlite:
-    :path: "../../node_modules/.pnpm/@capacitor-community+sqlite@7.0.0_@capacitor+core@7.0.1/node_modules/@capacitor-community/sqlite"
   CapacitorCordova:
     :path: "../../node_modules/.pnpm/@capacitor+ios@7.0.1_@capacitor+core@7.0.1/node_modules/@capacitor/ios"
   CapacitorSplashScreen:
@@ -44,12 +26,9 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Capacitor: 23fff43571a4d1e3ee7d67b5a3588c6e757c2913
   CapacitorCamera: 777ddf61d727754fcda0b92303ae09ea3765d7b7
-  CapacitorCommunitySqlite: 6501e7349acf998346acf24ef757861bb3f6fc2b
   CapacitorCordova: 63d476958d5022d76f197031e8b7ea3519988c64
   CapacitorSplashScreen: f4e58cc02aafd91c7cbaf32a3d1b44d02a115125
-  SQLCipher: 77fbe633cd84db04b07876dd50766b4924b57d61
-  ZIPFoundation: b8c29ea7ae353b309bc810586181fd073cb3312c
 
-PODFILE CHECKSUM: 1f8d544d4ad15f2655ebb161210d31c145a3dd43
+PODFILE CHECKSUM: 2e9945e8b5aa4f21a82c2f981da73703acd0f4ab
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.16.2

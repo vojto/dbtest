@@ -1,34 +1,43 @@
-To reproduce the bug:
+# Capacitor Memory Leak Demo
 
-1. Install dependencies in this project (`pnpm install`)
-1. Build and sync (`pnpm run build && npx cap sync`)
-1. Run the iOS app on a real device (not a simulator)
-1. Click "Test the database" button. You will get error that "notes" table doesn't exist. This is fine.
+This project demonstrates a potential memory leak when repeatedly passing messages between native code and JavaScript using a Capacitor plugin.
 
-Now we have the app running, but we still need to copy over the large (120MB) database file that we'll be testing against.
+## Setup Instructions
 
-1. In Xcode, open Window -> Devices and Simulators
-1. Select your physical device in the left sidebar
-1. You'll see a list of installed apps. Find "dbtest". Click "..." button and select "Download Container"
-1. Find container on your disk, right click, and select "Show Package Contents"
-1. Navigate to `./AppData/Library/Bazinga`. There you should see a file named `mydbSQLite.db`
-1. Download our 120MB db file. (Part of this repo.) Make sure the names are matching, and replace the small file with the large file.
+1. Install dependencies in this project:
 
-Now you've modified the container and it's time to upload it back to your iPhone.
+```bash
+pnpm install
+```
 
-1. Go back to Devices and Simulators
-1. Locate your device in the sidebar and `dbtest` app in the list of apps.
-1. Click on "..." button and select Replace Container
-1. Select the modified container on your disk. It should be 120MB+ now that we've replaced the database file inside of it.
+2. Build and sync the project:
 
-Run the app again. This time after clicking the "Test" button, it should print the correct count of notes (10k+)
+```bash
+pnpm run build && npx cap sync
+```
 
-Quit the app and run it again. Don't click the test button yet.
+3. Run the iOS app on a real device (not a simulator)
+
+## Testing the Memory Leak
 
 1. Open Safari
-1. In the Develop menu (you may need to enable developer tools in Safari preferences), select your device and open the website inspector
-1. Go into Timelines tab. Unselect all tools, except for "Memory".
-1. Start recording
-1. Click the "Test" button
+2. In the Develop menu (you may need to enable developer tools in Safari preferences), select your device and open the website inspector
+3. Go into Timelines tab. Unselect all tools, except for "Memory"
+4. Start recording
+5. Click the "Test Echo Plugin" button
 
-Voila. You'll see the memory growing and never being garbage collected.
+The app will:
+
+- Send 30 messages from native to JavaScript
+- Wait 2 seconds between each message
+- Display a counter of received messages
+
+## Expected Behavior
+
+You should observe:
+
+1. The memory usage growing over time
+2. Memory not being properly garbage collected
+3. A counter incrementing from 1 to 30 as messages are received
+
+This demonstrates a potential memory leak in the bridge between native code and JavaScript when passing frequent messages.
